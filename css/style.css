@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --color-bg-start: #0f172a;
+  --color-bg-middle: #111827;
+  --color-bg-end: #1e293b;
+  --color-card: rgba(255, 255, 255, 0.08);
+  --color-card-border: rgba(255, 255, 255, 0.12);
+  --color-text-main: #ffffff;
+  --color-text-muted: #cbd5e1;
+  --color-primary: #2563eb;
+  --color-cyan: #06b6d4;
+  --color-purple: #8b5cf6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(6, 182, 212, 0.18), transparent 30%),
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.18), transparent 28%),
+    linear-gradient(135deg, var(--color-bg-start), var(--color-bg-middle), var(--color-bg-end));
+  color: var(--color-text-main);
+  overflow-x: hidden;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Reusable glassmorphism card utility for dashboard sections */
+.glass-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-card-border);
+  border-radius: 24px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Reusable smaller weather card style */
+.weather-card {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 1rem;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.weather-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(6, 182, 212, 0.35);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Reusable muted text color */
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+/* Reusable gradient button */
+.gradient-btn {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-cyan));
+  color: white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gradient-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.3);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.45);
+  border-radius: 999px;
+  border: 2px solid rgba(15, 23, 42, 0.8);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(6, 182, 212, 0.8);
+}
+
+/* Better focus states for accessibility */
+input:focus,
+button:focus-visible {
+  outline: 2px solid rgba(6, 182, 212, 0.8);
+  outline-offset: 3px;
+}
+
+/* Small screen spacing improvements */
+@media (max-width: 640px) {
+  .glass-card {
+    border-radius: 18px;
+  }
+
+  .weather-card {
+    border-radius: 16px;
+  }
+}

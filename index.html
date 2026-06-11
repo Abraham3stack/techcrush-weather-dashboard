@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tech Crush Weather Dashboard</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body class="min-h-screen bg-slate-950 text-white">
+  <div class="container mx-auto px-4 py-6">
+
+    <header id="header" class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h1 class="text-3xl font-bold">Weather Dashboard</h1>
+        <p class="text-slate-400">Tech Crush Group 10</p>
+      </div>
+
+      <button
+        id="theme-toggle"
+        class="weather-card px-4 py-2"
+      >
+        Toggle Theme
+      </button>
+    </header>
+
+    <section id="search-section" class="glass-card mb-8 p-4">
+      <div class="flex flex-col gap-3 md:flex-row">
+        <input
+          id="city-input"
+          type="text"
+          placeholder="Search city..."
+          class="flex-1 rounded-lg bg-slate-900 px-4 py-3 outline-none glass-card"
+        />
+
+        <button
+          id="search-btn"
+          class="gradient-btn rounded-lg px-6 py-3 font-medium"
+        >
+          Search
+        </button>
+      </div>
+    </section>
+
+    <main id="dashboard-container" class="grid gap-6 lg:grid-cols-3">
+
+      <section class="lg:col-span-2 space-y-6">
+        <section
+          id="current-weather"
+          class="glass-card p-6"
+        >
+          <h2 class="mb-4 text-2xl font-semibold">Current Weather</h2>
+          <p class="text-slate-400">Weather information will appear here.</p>
+        </section>
+
+        <section
+          id="forecast-section"
+          class="glass-card p-6"
+        >
+          <h2 class="mb-4 text-2xl font-semibold">5-Day Forecast</h2>
+          <div id="forecast" class="grid gap-4 md:grid-cols-5 weather-card"></div>
+        </section>
+      </section>
+
+      <aside class="space-y-6">
+        <section
+          id="weather-details"
+          class="glass-card p-6"
+        >
+          <h2 class="mb-4 text-2xl font-semibold">Weather Details</h2>
+          <div id="details-grid" class="grid grid-cols-2 gap-4 weather-card"></div>
+        </section>
+
+        <section
+          id="weather-highlights"
+          class="glass-card p-6"
+        >
+          <h2 class="mb-4 text-2xl font-semibold">Weather Highlights</h2>
+          <div id="highlights-grid" class="space-y-3 weather-card"></div>
+        </section>
+      </aside>
+
+    </main>
+  </div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
