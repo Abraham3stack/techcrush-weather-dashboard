@@ -1,16 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --color-bg-start: #0f172a;
-  --color-bg-middle: #111827;
+  /* Dark mode (default) */
+  --color-bg-start: #0b1329;
+  --color-bg-middle: #0f172a;
   --color-bg-end: #1e293b;
-  --color-card: rgba(255, 255, 255, 0.08);
-  --color-card-border: rgba(255, 255, 255, 0.12);
-  --color-text-main: #ffffff;
-  --color-text-muted: #cbd5e1;
-  --color-primary: #2563eb;
+  --color-card: rgba(15, 23, 42, 0.55);
+  --color-card-border: rgba(255, 255, 255, 0.07);
+  --color-text-main: #f8fafc;
+  --color-text-muted: #94a3b8;
+  --color-primary: #3b82f6;
   --color-cyan: #06b6d4;
   --color-purple: #8b5cf6;
+  --color-accent: rgba(6, 182, 212, 0.15);
+}
+
+.light {
+  /* Light mode variables */
+  --color-bg-start: #f1f5f9;
+  --color-bg-middle: #e2e8f0;
+  --color-bg-end: #cbd5e1;
+  --color-card: rgba(255, 255, 255, 0.7);
+  --color-card-border: rgba(15, 23, 42, 0.08);
+  --color-text-main: #0f172a;
+  --color-text-muted: #64748b;
+  --color-primary: #2563eb;
+  --color-cyan: #0891b2;
+  --color-purple: #7c3aed;
+  --color-accent: rgba(37, 99, 235, 0.08);
 }
 
 * {
@@ -24,11 +41,12 @@ html {
 body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(6, 182, 212, 0.18), transparent 30%),
-    radial-gradient(circle at top right, rgba(37, 99, 235, 0.18), transparent 28%),
+    radial-gradient(circle at top left, var(--color-accent), transparent 35%),
+    radial-gradient(circle at top right, rgba(139, 92, 246, 0.08), transparent 30%),
     linear-gradient(135deg, var(--color-bg-start), var(--color-bg-middle), var(--color-bg-end));
   color: var(--color-text-main);
   overflow-x: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 button,
@@ -40,32 +58,48 @@ button {
   cursor: pointer;
 }
 
-/* Reusable glassmorphism card utility for dashboard sections */
+/* Glassmorphism card utility */
 .glass-card {
   background: var(--color-card);
   border: 1px solid var(--color-card-border);
-  border-radius: 24px;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Reusable smaller weather card style */
+.light .glass-card {
+  box-shadow: 0 8px 32px 0 rgba(148, 163, 184, 0.1);
+}
+
+/* Smaller details and forecast card style */
 .weather-card {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 18px;
-  padding: 1rem;
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 1.25rem;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.light .weather-card {
+  background: rgba(15, 23, 42, 0.03);
+  border: 1px solid rgba(15, 23, 42, 0.05);
 }
 
 .weather-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(6, 182, 212, 0.35);
-  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-4px);
+  border-color: var(--color-cyan);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.12);
 }
 
-/* Reusable muted text color */
+.light .weather-card:hover {
+  background: rgba(15, 23, 42, 0.05);
+  box-shadow: 0 8px 24px rgba(8, 145, 178, 0.08);
+}
+
+/* Reusable text helper */
 .text-muted {
   color: var(--color-text-muted);
 }
@@ -79,43 +113,135 @@ button {
 
 .gradient-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
+}
+
+/* Custom animated transitions for panels */
+.fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.scale-up {
+  animation: scaleUp 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Pulsing highlight effect */
+.icon-pulse {
+  animation: pulseIcon 3s ease-in-out infinite alternate;
+}
+
+@keyframes pulseIcon {
+  0% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 2px rgba(6, 182, 212, 0.2));
+  }
+  50% {
+    transform: scale(1.05) rotate(3deg);
+    filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.5));
+  }
+  100% {
+    transform: scale(1) rotate(-3deg);
+    filter: drop-shadow(0 0 2px rgba(6, 182, 212, 0.2));
+  }
 }
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.8);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.45);
+  background: rgba(148, 163, 184, 0.2);
   border-radius: 999px;
-  border: 2px solid rgba(15, 23, 42, 0.8);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(6, 182, 212, 0.8);
+  background: var(--color-cyan);
 }
 
-/* Better focus states for accessibility */
+/* Focus states */
 input:focus,
 button:focus-visible {
-  outline: 2px solid rgba(6, 182, 212, 0.8);
-  outline-offset: 3px;
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 2px;
 }
 
-/* Small screen spacing improvements */
+/* Mobile scrolling styles */
 @media (max-width: 640px) {
   .glass-card {
-    border-radius: 18px;
+    border-radius: 16px;
   }
 
   .weather-card {
-    border-radius: 16px;
+    border-radius: 12px;
   }
 }
+
+/* Weather condition gradients — must be in CSS so CDN Tailwind picks them up */
+.cond-sunny      { background: linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(251,191,36,0.04) 50%, transparent 100%); }
+.cond-cloudy     { background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(148,163,184,0.04) 50%, transparent 100%); }
+.cond-rainy      { background: linear-gradient(135deg, rgba(59,130,246,0.13) 0%, rgba(6,182,212,0.04) 50%, transparent 100%); }
+.cond-snowy      { background: linear-gradient(135deg, rgba(186,230,253,0.12) 0%, rgba(99,102,241,0.04) 50%, transparent 100%); }
+.cond-foggy      { background: linear-gradient(135deg, rgba(100,116,139,0.12) 0%, rgba(71,85,105,0.04) 50%, transparent 100%); }
+.cond-stormy     { background: linear-gradient(135deg, rgba(139,92,246,0.14) 0%, rgba(30,41,59,0.08) 50%, transparent 100%); }
+.cond-drizzle    { background: linear-gradient(135deg, rgba(20,184,166,0.12) 0%, rgba(59,130,246,0.04) 50%, transparent 100%); }
+.cond-default    { background: linear-gradient(135deg, rgba(148,163,184,0.08) 0%, transparent 100%); }
+
+/* Detail icon accent backgrounds */
+.icon-bg-blue    { background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.15); }
+.icon-bg-purple  { background: rgba(139,92,246,0.12); border-color: rgba(139,92,246,0.15); }
+.icon-bg-amber   { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.15); }
+.icon-bg-emerald { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.15); }
+
+/* Recent search chip: active/selected state */
+.search-chip-active {
+  background: rgba(6,182,212,0.15);
+  border-color: rgba(6,182,212,0.5);
+  color: #ffffff;
+}
+
+/* Smooth detail card height */
+.detail-card {
+  min-height: 7.5rem;
+}
+
+/* Current weather card explicit min-height (set via JS className, bypassing CDN JIT) */
+.current-weather-card {
+  min-height: 20rem;
+}
+
+/* Light mode text adjustments */
+.light .text-white        { color: #0f172a !important; }
+.light .text-slate-300    { color: #334155 !important; }
+.light .text-slate-400    { color: #475569 !important; }
+.light .text-slate-500    { color: #64748b !important; }
+.light .text-slate-200    { color: #1e293b !important; }
+.light .bg-slate-900\/60  { background: rgba(241,245,249,0.8) !important; }
+.light .border-slate-800\/80 { border-color: rgba(203,213,225,0.8) !important; }
