@@ -1,75 +1,149 @@
-import { getWeatherByCity } from './weatherService.js';
+import { getWeatherByCity, getWeatherByCoordinates } from './weatherService.js';
+import { getRecentSearches, saveRecentSearch }       from './storage.js';
+import {
+  renderCurrentWeather,
+  renderWeatherDetails,
+  renderForecast,
+  renderHourlyForecast,
+  renderWeatherHighlights,
+  renderRecentSearches,
+  showLoading,
+  showError,
+} from './ui.js';
 
-// Select important elements from the page
-const cityInput = document.getElementById('city-input');
-const searchButton = document.getElementById('search-btn');
-const currentWeatherSection = document.getElementById('current-weather');
-const forecastContainer = document.getElementById('forecast');
-const detailsGrid = document.getElementById('details-grid');
-const highlightsGrid = document.getElementById('highlights-grid');
+// ── DOM references ──────────────────────────────────────────────────────────
+const cityInput               = document.getElementById('city-input');
+const searchButton            = document.getElementById('search-btn');
+const currentWeatherSection   = document.getElementById('current-weather');
+const detailsGrid             = document.getElementById('details-grid');
+const forecastContainer       = document.getElementById('forecast');
+const hourlyForecastContainer = document.getElementById('hourly-forecast');
+const recentSearchesContainer = document.getElementById('recent-searches');
+const highlightsGrid          = document.getElementById('highlights-grid');
+const locationButton          = document.getElementById('location-btn');
+const themeToggle             = document.getElementById('theme-toggle');
+const themeToggleDarkIcon     = document.getElementById('theme-toggle-dark-icon');
+const themeToggleLightIcon    = document.getElementById('theme-toggle-light-icon');
 
-// This function runs whenever the user searches for a city
-async function handleSearch() {
-  const city = cityInput.value.trim();
+// ── Render helpers ───────────────────────────────────────────────────────────
+function renderAll(data) {
+  renderCurrentWeather(data,    currentWeatherSection);
+  renderWeatherDetails(data,    detailsGrid);
+  renderForecast(data,          forecastContainer);
+  renderHourlyForecast(data,    hourlyForecastContainer);
+  renderWeatherHighlights(data, highlightsGrid);
+}
 
-  if (!city) {
-    showError('Please enter a city name.');
+function refreshRecentChips() {
+  renderRecentSearches(getRecentSearches(), recentSearchesContainer, (city) => {
+    searchCity(city);
+  });
+}
+
+// ── City search ──────────────────────────────────────────────────────────────
+async function searchCity(city) {
+  if (!city || !city.trim()) return;
+
+  const trimmedCity = city.trim();
+  showLoading(trimmedCity, currentWeatherSection);
+
+  try {
+    const data = await getWeatherByCity(trimmedCity);
+
+    // Persist to history using the authoritative name from the API
+    saveRecentSearch(data.location.name);
+    refreshRecentChips();
+
+    renderAll(data);
+    cityInput.value = '';
+  } catch (error) {
+    console.error('[search]', error);
+    showError(error.message, currentWeatherSection);
+  }
+}
+
+// ── Geolocation ──────────────────────────────────────────────────────────────
+async function fetchWeatherByLocation(lat, lon) {
+  showLoading('your location', currentWeatherSection);
+  try {
+    const data = await getWeatherByCoordinates(lat, lon);
+    renderAll(data);
+  } catch (error) {
+    console.error('[geolocation]', error);
+    showError(error.message, currentWeatherSection);
+  }
+}
+
+function handleGeolocation() {
+  if (!navigator.geolocation) {
+    showError('Geolocation is not supported by your browser.', currentWeatherSection);
     return;
   }
 
-  console.log('Searching weather for:', city);
-  showLoading(city);
+  showLoading('your location', currentWeatherSection);
 
-  try {
-    const data = await getWeatherByCity(city);
+  navigator.geolocation.getCurrentPosition(
+    ({ coords }) => fetchWeatherByLocation(coords.latitude, coords.longitude),
+    (err) => {
+      const msgs = {
+        [err.PERMISSION_DENIED]:    'Location permission denied. Please search for a city manually.',
+        [err.POSITION_UNAVAILABLE]: 'Location information is unavailable right now.',
+        [err.TIMEOUT]:              'Location request timed out. Please try again.',
+      };
+      showError(msgs[err.code] || 'Unable to retrieve your location.', currentWeatherSection);
+    },
+    { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+  );
+}
 
-    console.log('Weather data:', data);
-
-    currentWeatherSection.innerHTML = `
-      <h2 class="mb-4 text-2xl font-semibold">Current Weather</h2>
-      <p class="text-slate-400">
-        ${data.location.name}, ${data.location.country}
-      </p>
-      <p class="mt-3 text-4xl font-bold">
-        ${data.weather.current.temperature_2m}°C
-      </p>
-    `;
-  } catch (error) {
-    console.error(error);
-    showError(error.message);
+// ── Theme ────────────────────────────────────────────────────────────────────
+function applyTheme(theme) {
+  const html = document.documentElement;
+  if (theme === 'light') {
+    html.classList.add('light');
+    html.classList.remove('dark');
+    themeToggleDarkIcon.classList.add('hidden');
+    themeToggleLightIcon.classList.remove('hidden');
+  } else {
+    html.classList.remove('light');
+    html.classList.add('dark');
+    themeToggleDarkIcon.classList.remove('hidden');
+    themeToggleLightIcon.classList.add('hidden');
   }
 }
 
-// Placeholder function for fetching weather using current location
-function fetchWeatherByLocation(latitude, longitude) {
-  console.log('Weather API function will use coordinates:', latitude, longitude);
+function toggleTheme() {
+  const isLight = document.documentElement.classList.contains('light');
+  const next    = isLight ? 'dark' : 'light';
+  localStorage.setItem('theme', next);
+  applyTheme(next);
 }
 
-// Show a simple loading message while weather data is being prepared
-function showLoading(city) {
-  currentWeatherSection.innerHTML = `
-    <h2 class="mb-4 text-2xl font-semibold">Loading Weather...</h2>
-    <p class="text-slate-400">Fetching weather information for ${city}.</p>
-  `;
-}
+// ── Event listeners ──────────────────────────────────────────────────────────
+searchButton.addEventListener('click', () => {
+  const city = cityInput.value.trim();
+  if (!city) {
+    showError('Please enter a city name to search.', currentWeatherSection);
+    return;
+  }
+  searchCity(city);
+});
 
-// Show a simple error message when something goes wrong
-function showError(message) {
-  currentWeatherSection.innerHTML = `
-    <h2 class="mb-4 text-2xl font-semibold text-red-400">Error</h2>
-    <p class="text-slate-300">${message}</p>
-  `;
-}
-
-// Run search when the search button is clicked
-searchButton.addEventListener('click', handleSearch);
-
-// Run search when the Enter key is pressed inside the input
-cityInput.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
-    handleSearch();
+cityInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const city = cityInput.value.trim();
+    if (!city) {
+      showError('Please enter a city name to search.', currentWeatherSection);
+      return;
+    }
+    searchCity(city);
   }
 });
 
-// Initial log to confirm the JavaScript file is connected properly
-console.log('Weather Dashboard app.js connected successfully.');
+locationButton.addEventListener('click', handleGeolocation);
+themeToggle.addEventListener('click', toggleTheme);
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+applyTheme(localStorage.getItem('theme') || 'dark');
+refreshRecentChips();
+searchCity('Abuja');
