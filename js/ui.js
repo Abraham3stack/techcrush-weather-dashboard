@@ -21,22 +21,22 @@ export function renderCurrentWeather(data, container) {
   const lowTemp    = Math.round(daily.temperature_2m_min[0]);
 
   // Apply CSS condition gradient class on the card
-  container.className = `glass-card p-6 md:p-8 relative overflow-hidden current-weather-card ${condition.gradientClass} fade-in`;
+  container.className = `glass-card p-4 sm:p-6 md:p-8 relative overflow-hidden current-weather-card ${condition.gradientClass} fade-in`;
 
   container.innerHTML = `
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
+    <div class="relative z-10 flex min-w-0 flex-col items-start justify-between gap-5 md:flex-row md:items-center md:gap-6">
 
       <!-- Left: info -->
-      <div class="space-y-4 flex-1">
+      <div class="min-w-0 flex-1 space-y-4">
 
         <!-- City & country -->
-        <div class="flex items-center gap-2">
+        <div class="flex min-w-0 items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="#22d3ee" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
           </svg>
-          <h2 class="text-2xl font-bold text-white tracking-tight">
+          <h2 class="min-w-0 break-words text-xl font-bold tracking-tight text-white sm:text-2xl">
             ${location.name}${location.country ? ', ' + location.country : ''}
           </h2>
         </div>
@@ -49,14 +49,14 @@ export function renderCurrentWeather(data, container) {
 
         <!-- Temperature -->
         <div class="flex items-baseline gap-1 select-none">
-          <span class="text-8xl font-extrabold tracking-tighter text-white leading-none">${currentTemp}</span>
+          <span class="text-6xl font-extrabold leading-none tracking-tight text-white sm:text-7xl md:text-8xl md:tracking-tighter">${currentTemp}</span>
           <span class="text-3xl font-light text-slate-300">°C</span>
         </div>
 
         <!-- Condition -->
-        <div class="flex items-center gap-2 text-slate-200">
+        <div class="flex min-w-0 items-center gap-2 text-slate-200">
           <span class="text-2xl leading-none select-none">${getMiniWeatherIcon(current.weather_code)}</span>
-          <span class="text-lg font-semibold">${condition.label}</span>
+          <span class="text-base font-semibold sm:text-lg">${condition.label}</span>
         </div>
 
         <!-- High / Low badges -->
@@ -79,7 +79,7 @@ export function renderCurrentWeather(data, container) {
       </div>
 
       <!-- Right: big weather icon -->
-      <div class="flex-shrink-0 flex items-center justify-center self-center select-none p-4">
+      <div class="flex flex-shrink-0 items-center justify-center self-center select-none p-2 sm:p-4">
         ${condition.icon}
       </div>
     </div>
@@ -120,13 +120,13 @@ export function renderWeatherDetails(data, container) {
   ];
 
   container.innerHTML = details.map(d => `
-    <div class="glass-card p-5 detail-card flex flex-col justify-between weather-card fade-in">
+    <div class="glass-card detail-card flex flex-col justify-between p-4 weather-card fade-in sm:p-5">
       <div class="p-2.5 rounded-xl border self-start ${d.iconBg}">
         ${d.icon}
       </div>
       <div class="mt-3 space-y-0.5">
         <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">${d.label}</p>
-        <p class="text-2xl font-bold text-white">${d.value}</p>
+        <p class="break-words text-xl font-bold text-white sm:text-2xl">${d.value}</p>
       </div>
     </div>
   `).join('');
@@ -152,7 +152,7 @@ export function renderForecast(data, container) {
     const condLabel = getWeatherCondition(code).label;
 
     html += `
-      <div class="weather-card flex flex-col items-center justify-between text-center p-4 min-w-[80px] flex-1 fade-in">
+      <div class="weather-card flex min-w-[88px] flex-shrink-0 flex-col items-center justify-between p-4 text-center sm:min-w-0 sm:flex-1 fade-in">
         <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">${dayName}</span>
         <span class="text-3xl my-3 select-none" title="${condLabel}">${miniIcon}</span>
         <div class="flex items-center gap-2 text-sm">
@@ -197,7 +197,7 @@ export function renderHourlyForecast(data, container) {
     }
 
     html += `
-      <div class="weather-card flex-shrink-0 flex flex-col items-center justify-between text-center p-4 min-w-[76px] h-28 fade-in">
+      <div class="weather-card flex h-28 min-w-[78px] flex-shrink-0 flex-col items-center justify-between p-4 text-center fade-in">
         <span class="text-xs font-semibold text-slate-500">${label}</span>
         <span class="text-2xl select-none">${miniIcon}</span>
         <span class="text-sm font-bold text-white">${temp}°</span>
@@ -239,14 +239,14 @@ export function renderWeatherHighlights(data, container) {
   ];
 
   container.innerHTML = items.map(it => `
-    <div class="weather-card flex items-center justify-between p-4 fade-in">
-      <div class="flex items-center gap-3">
+    <div class="weather-card flex flex-col items-start justify-between gap-3 p-4 fade-in min-[360px]:flex-row min-[360px]:items-center">
+      <div class="flex min-w-0 items-center gap-3">
         <div class="p-2.5 rounded-xl border" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.06);">
           ${it.icon}
         </div>
-        <div>
+        <div class="min-w-0">
           <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">${it.title}</p>
-          <p class="text-lg font-bold text-white mt-0.5">${it.value}</p>
+          <p class="mt-0.5 break-words text-lg font-bold text-white">${it.value}</p>
         </div>
       </div>
       <span style="background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.15);color:#22d3ee;border-radius:9999px;padding:0.2rem 0.65rem;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">
@@ -268,7 +268,7 @@ export function renderRecentSearches(list, container, onClickCallback) {
   container.innerHTML = list.map(city => `
     <button
       data-city="${city}"
-      class="px-4 py-1.5 text-xs font-semibold rounded-full border transition-all duration-200 cursor-pointer"
+      class="max-w-full truncate px-4 py-2 text-xs font-semibold rounded-full border transition-all duration-200 cursor-pointer sm:py-1.5"
       style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.08);color:#cbd5e1;"
       onmouseover="this.style.background='rgba(6,182,212,0.12)';this.style.borderColor='rgba(6,182,212,0.4)';this.style.color='#fff';"
       onmouseout="this.style.background='rgba(255,255,255,0.05)';this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='#cbd5e1';"
@@ -284,7 +284,7 @@ export function renderRecentSearches(list, container, onClickCallback) {
    Loading State
 ───────────────────────────────────────────── */
 export function showLoading(city, container) {
-  container.className = 'glass-card p-6 md:p-8 relative overflow-hidden current-weather-card flex items-center justify-center';
+  container.className = 'glass-card p-4 sm:p-6 md:p-8 relative overflow-hidden current-weather-card flex items-center justify-center';
   container.innerHTML = `
     <div class="flex flex-col items-center gap-4 text-center">
       <div class="h-12 w-12 animate-spin rounded-full border-4 border-cyan-500 border-t-transparent"></div>
@@ -299,7 +299,7 @@ export function showLoading(city, container) {
    Error State
 ───────────────────────────────────────────── */
 export function showError(message, container) {
-  container.className = 'glass-card p-6 md:p-8 relative overflow-hidden current-weather-card flex items-center justify-center';
+  container.className = 'glass-card p-4 sm:p-6 md:p-8 relative overflow-hidden current-weather-card flex items-center justify-center';
   container.innerHTML = `
     <div class="flex flex-col items-center gap-4 text-center px-4">
       <div class="flex h-14 w-14 items-center justify-center rounded-2xl" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.2);">

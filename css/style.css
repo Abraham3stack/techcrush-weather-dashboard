@@ -34,6 +34,12 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -60,6 +66,7 @@ button {
 
 /* Glassmorphism card utility */
 .glass-card {
+  min-width: 0;
   background: var(--color-card);
   border: 1px solid var(--color-card-border);
   border-radius: 20px;
@@ -77,6 +84,7 @@ button {
 
 /* Smaller details and forecast card style */
 .weather-card {
+  min-width: 0;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 16px;
@@ -189,6 +197,17 @@ button {
   background: var(--color-cyan);
 }
 
+#forecast,
+#hourly-forecast {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-inline: contain;
+}
+
+#forecast > *,
+#hourly-forecast > * {
+  scroll-snap-align: start;
+}
+
 /* Focus states */
 input:focus,
 button:focus-visible {
@@ -204,6 +223,25 @@ button:focus-visible {
 
   .weather-card {
     border-radius: 12px;
+  }
+
+  .current-weather-card {
+    min-height: 18rem;
+  }
+
+  #forecast,
+  #hourly-forecast {
+    scroll-snap-type: inline proximity;
+  }
+}
+
+@media (max-width: 359px) {
+  .current-weather-card {
+    min-height: 16.5rem;
+  }
+
+  .detail-card {
+    min-height: 7rem;
   }
 }
 
